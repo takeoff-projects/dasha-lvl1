@@ -3,4 +3,5 @@ RUN mkdir /app
 ADD . /app
 WORKDIR /app
 RUN go build -o main .
+ENV GOOGLE_CLOUD_PROJECT=roi-takeoff-user4
 CMD ["/app/main"]

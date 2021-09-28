@@ -17,6 +17,12 @@ resource "google_cloud_run_service" "default" {
   }
 }
 
+resource "google_app_engine_application" "app" {
+  project     = "roi-takeoff-user4"
+  location_id = "us-central1"
+  database_type = "CLOUD_DATASTORE_COMPATIBILITY"
+}
+
 data "google_iam_policy" "noauth" {
   binding {
     role = "roles/run.invoker"
