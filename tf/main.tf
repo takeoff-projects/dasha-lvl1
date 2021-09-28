@@ -19,7 +19,7 @@ resource "google_cloud_run_service" "default" {
 
 resource "google_app_engine_application" "app" {
   project     = "roi-takeoff-user4"
-  location_id = "us-central1"
+  location_id = "us-central"
   database_type = "CLOUD_DATASTORE_COMPATIBILITY"
 }
 
