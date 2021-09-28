@@ -11,16 +11,10 @@ resource "google_cloud_run_service" "default" {
   template {
     spec {
       containers {
-        image = "gcr.io/roi-takeoff-user4/image1"
+        image = "gcr.io/roi-takeoff-user4/image10"
       }
     }
   }
-}
-
-resource "google_app_engine_application" "app" {
-  project     = "roi-takeoff-user4"
-  location_id = "us-central"
-  database_type = "CLOUD_DATASTORE_COMPATIBILITY"
 }
 
 data "google_iam_policy" "noauth" {
