@@ -7,10 +7,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+
 	"drehnstrom.com/go-pets/petsdb"
 )
 
-var projectID string 
+var projectID string
 
 func main() {
 	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
@@ -35,12 +36,13 @@ func main() {
 	// The rest of the routes
 	mux.HandleFunc("/", indexHandler)
 	mux.HandleFunc("/about", aboutHandler)
-
+	mux.HandleFunc("/add", addHandler)
+	//mux.HandleFunc("/edit/{id}", editHandler)
 
 	log.Printf("Webserver listening on Port: %s", port)
 	http.ListenAndServe(":"+port, mux)
 }
-	
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	var pets []petsdb.Pet
 	pets, error := petsdb.GetPets()
@@ -50,7 +52,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := HomePageData{
 		PageTitle: "Pets Home Page",
-		Pets: pets,
+		Pets:      pets,
 	}
 
 	var tpl = template.Must(template.ParseFiles("templates/index.html", "templates/layout.html"))
@@ -86,10 +88,44 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("About Page Served")
 }
 
+func addHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		data := AddPageData{
+			PageTitle: "Add Pet",
+		}
+
+		var tpl = template.Must(template.ParseFiles("templates/add.html", "templates/layout.html"))
+
+		buf := &bytes.Buffer{}
+		err := tpl.Execute(buf, data)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Println(err.Error())
+			return
+		}
+		buf.WriteTo(w)
+
+		log.Println("Add Page Served")
+	} else {
+		// Add Pet Here
+		pet := petsdb.Pet{
+			Caption: r.FormValue("caption"),
+			Email:   r.FormValue("email"),
+			Owner:   r.FormValue("owner"),
+			Petname: r.FormValue("petname"),
+			//add likes and added if I figure out how to add non-strings
+		}
+		petsdb.AddPet(pet)
+
+		// Go back to home page
+		http.Redirect(w, r, "/", http.StatusFound)
+	}
+}
+
 // HomePageData for Index template
 type HomePageData struct {
 	PageTitle string
-	Pets []petsdb.Pet
+	Pets      []petsdb.Pet
 }
 
 // AboutPageData for About template
@@ -97,3 +133,7 @@ type AboutPageData struct {
 	PageTitle string
 }
 
+// AddPageData for About template
+type AddPageData struct {
+	PageTitle string
+}
