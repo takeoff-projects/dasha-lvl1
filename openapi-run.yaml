@@ -3,13 +3,13 @@ info:
   title: Cloud Endpoints + Cloud Run
   description: Sample API on Cloud Endpoints with a Cloud Run backend
   version: 1.0.0
-host: cloudrun-srv-ega5bq4rma-uc.a.run.app
+host: go-pets-ega5bq4rma-uc.a.run.app
 schemes:
   - https
 produces:
   - application/json
 x-google-backend:
-  address: https://cloudrun-srv-ega5bq4rma-uc.a.run.app
+  address: https://go-pets-ega5bq4rma-uc.a.run.app
   protocol: h2
 paths:
   /about:
