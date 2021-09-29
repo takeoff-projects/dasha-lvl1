@@ -3,4 +3,4 @@
 cd tf
 
 terraform plan -destroy
-terraform destroy
+terraform destroy -auto-approve
