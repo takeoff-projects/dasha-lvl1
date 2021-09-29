@@ -11,3 +11,9 @@ gcloud builds submit --tag gcr.io/$GOOGLE_CLOUD_PROJECT/image10
 
 cd tf 
 terraform init && terraform apply -auto-approve
+
+gcloud services enable servicemanagement.googleapis.com
+gcloud services enable servicecontrol.googleapis.com
+gcloud services enable endpoints.googleapis.com
+
+gcloud endpoints services deploy openapi-run.yaml --project $GOOGLE_CLOUD_PROJECT
