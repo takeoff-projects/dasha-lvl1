@@ -6,11 +6,10 @@ provider "google" {
 
 locals {
   location = "us_central"
-  
   service_name   = "go-pets"
-
   deployment_name = "go-pets"
   pets_worker_sa  = "serviceAccount:${google_service_account.pets_worker.email}"
+  cloud_run_url = google_cloud_run_service.cloud-run.status[0].url
 }
 
 # Create a service account
@@ -35,8 +34,8 @@ resource "google_project_iam_binding" "service_permissions" {
   depends_on = [google_service_account.pets_worker]
 }
 
-resource "google_cloud_run_service" "default" {
-  name     = "cloudrun-srv"
+resource "google_cloud_run_service" "cloud_run" {
+  name     = "go-pets"
   location = "us-central1"
 
   template {
@@ -46,6 +45,13 @@ resource "google_cloud_run_service" "default" {
       }
     }
   }
+}
+
+resource "google_endpoints_service" "openapi_service" {
+  service_name   = "${replace(local.cloud_run_url, "https://", "")}"
+  project        = "roi-takeoff-user4"
+  openapi_config = file("openapi-run.yaml")
+  depends_on = [google_cloud_run_service.cloud-run]
 }
 
 data "google_iam_policy" "noauth" {
