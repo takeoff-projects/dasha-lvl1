@@ -12,7 +12,6 @@ import (
 )
 
 var projectID string
-var Pets []Pet
 
 // Pet model stored in Datastore
 type Pet struct {
@@ -34,7 +33,7 @@ func GetPets() ([]Pet, error) {
 		log.Fatal(`You need to set the environment variable "GOOGLE_CLOUD_PROJECT"`)
 	}
 
-	//var pets []Pet
+	var Pets []Pet
 	ctx := context.Background()
 	client, err := datastore.NewClient(ctx, projectID)
 	if err != nil {
@@ -59,7 +58,24 @@ func GetPets() ([]Pet, error) {
 }
 
 func AddPet(pet Pet) {
-	newName := uuid.New().String()
-	pet.Name = newName
-	Pets = append(Pets, pet)
+	id := uuid.New()
+	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
+	if projectID == "" {
+		log.Fatal(`You need to set the environment variable "GOOGLE_CLOUD_PROJECT"`)
+	}
+
+	ctx := context.Background()
+	client, err := datastore.NewClient(ctx, projectID)
+	if err != nil {
+		log.Fatalf("Could not create datastore client: %v", err)
+	}
+
+	k := datastore.NameKey("Pet", "Pet"+id.String(), nil)
+	_, err = client.Put(ctx, k, &pet)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	log.Println("new Pet:", pet)
+	client.Close()
 }
