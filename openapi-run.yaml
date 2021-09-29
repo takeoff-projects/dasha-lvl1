@@ -1,0 +1,23 @@
+swagger: '2.0'
+info:
+  title: Cloud Endpoints + Cloud Run
+  description: Sample API on Cloud Endpoints with a Cloud Run backend
+  version: 1.0.0
+host: cloudrun-srv-ega5bq4rma-uc.a.run.app
+schemes:
+  - https
+produces:
+  - application/json
+x-google-backend:
+  address: https://cloudrun-srv-ega5bq4rma-uc.a.run.app
+  protocol: h2
+paths:
+  /about:
+    get:
+      summary: Says what it is
+      operationId: about
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
