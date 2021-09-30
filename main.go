@@ -133,7 +133,7 @@ type AboutPageData struct {
 	PageTitle string
 }
 
-// AddPageData for About template
+// AddPageData for Add template
 type AddPageData struct {
 	PageTitle string
 }

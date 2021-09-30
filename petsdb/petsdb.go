@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"cloud.google.com/go/datastore"
-	"github.com/google/uuid"
 )
 
 var projectID string
@@ -58,7 +57,6 @@ func GetPets() ([]Pet, error) {
 }
 
 func AddPet(pet Pet) {
-	id := uuid.New()
 	projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
 	if projectID == "" {
 		log.Fatal(`You need to set the environment variable "GOOGLE_CLOUD_PROJECT"`)
@@ -70,12 +68,12 @@ func AddPet(pet Pet) {
 		log.Fatalf("Could not create datastore client: %v", err)
 	}
 
-	k := datastore.NameKey("Pet", "Pet"+id.String(), nil)
-	_, err = client.Put(ctx, k, &pet)
-	if err != nil {
-		fmt.Println(err)
-	}
+	newKey := datastore.IncompleteKey("Pet", nil)
+	_, err = client.Put(ctx, newKey, &Pet{
+		Caption: "some text",
+		Email:   "pet email",
+		Owner:   "owner",
+		Petname: "name",
+	})
 
-	log.Println("new Pet:", pet)
-	client.Close()
 }
